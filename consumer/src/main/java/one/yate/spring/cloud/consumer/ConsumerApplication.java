@@ -9,6 +9,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 import zipkin2.Span;
 import zipkin2.reporter.Reporter;
 
@@ -17,7 +18,7 @@ import zipkin2.reporter.Reporter;
 @EnableEurekaClient
 @EnableFeignClients(basePackages = "one.yate.spring.cloud.remote.**")
 @ComponentScan(basePackages = "one.yate.spring.cloud.**")
-//@EnableAsync
+@EnableAsync
 @EnableCircuitBreaker
 public class ConsumerApplication {
 
