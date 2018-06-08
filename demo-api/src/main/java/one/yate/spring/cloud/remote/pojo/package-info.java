@@ -1,0 +1,1 @@
+package one.yate.spring.cloud.remote.pojo;

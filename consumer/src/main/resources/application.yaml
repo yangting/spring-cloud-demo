@@ -1,0 +1,55 @@
+debug: false
+
+server:
+  port: 9890
+
+spring:
+  application:
+    name: demo-consumer
+  cloud:
+    inetutils:
+      preferred-networks:
+        - 192.168
+  sleuth:
+    sampler:
+      probability: 1.0
+    enabled: true
+    log:
+      slf4j:
+        enabled: true
+
+sample:
+  zipkin:
+    # When enabled=false, traces log to the console. Comment to send to zipkin
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - '*'
+
+feign:
+  hystrix:
+    enabled: true
+
+#hystrix:
+#  metrics:
+#    enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9881/eureka/,http://localhost:9880/eureka
+  instance:
+    prefer-ip-address: true
+
+# 去掉 @EnableDiscoveryClient 可以自定义 ribbon
+###
+#movie-provider:
+#   ribbot:
+#     listOfServers: http://host:port, http://host:port, http://host:port
+
+logging:
+  path: ${user.home}/logs/${spring.application.name}/${server.port}

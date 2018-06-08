@@ -1,0 +1,29 @@
+debug: false
+
+
+server:
+  port: 9881
+
+
+spring:
+  application:
+    name: eureka-server
+  cloud:
+    inetutils:
+      preferred-networks:
+        - 192.168
+
+eureka:
+  instance:
+    hostname: eureka-ha1
+    instance-enabled-onit: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    allow-redirects: true
+    service-url:
+      defaultZone: http://eureka-ha0:9880/eureka,http://eureka-ha1:9881/eureka
+
+
+logging:
+  path: ${user.home}/logs/${spring.application.name}/${server.port}

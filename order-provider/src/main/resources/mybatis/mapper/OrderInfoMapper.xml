@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="one.yate.spring.cloud.provider.metadata.dao.mapper.OrderInfoMapper">
+
+    <resultMap type="one.yate.spring.cloud.provider.metadata.entity.OrderInfo" id="OrderInfoMap">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="movieId" column="movie_id"/>
+        <result property="movieName" column="movie_name"/>
+        <result property="lockSeats" column="lock_seats"/>
+        <result property="ticketNums" column="ticket_nums"/>
+        <result property="ticketPrice" column="ticket_price"/>
+    </resultMap>
+
+    <!-- auto implement code by one.yate.spring.cloud.provider.metadata.dao.IBaseMapperDao.java -->
+    <select id="getEntity" resultMap="OrderInfoMap">
+        select * from order_info where id= #{id}
+    </select>
+
+    <insert id="add">
+        <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        insert into order_info(user_id,user_name,movie_id,movie_name,lock_seats,ticket_nums,ticket_price)
+        values(#{userId},#{userName},#{movieId},#{movieName},#{lockSeats},#{ticketNums},#{ticketPrice})
+    </insert>
+
+    <insert id="batchAdd">insert into
+        order_info(user_id,user_name,movie_id,movie_name,lock_seats,ticket_nums,ticket_price) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.userId},#{item.userName},#{item.movieId},#{item.movieName},#{item.lockSeats},#{item.ticketNums},#{item.ticketPrice})
+        </foreach>
+    </insert>
+
+    <update id="update">
+        update order_info
+        <set>
+            <if test="userId!=null">
+                user_id=#{userId},
+            </if>
+            <if test="userName!=null">
+                user_name=#{userName},
+            </if>
+            <if test="movieId!=null">
+                movie_id=#{movieId},
+            </if>
+            <if test="movieName!=null">
+                movie_name=#{movieName},
+            </if>
+            <if test="lockSeats!=null">
+                lock_seats=#{lockSeats},
+            </if>
+            <if test="ticketNums!=null">
+                ticket_nums=#{ticketNums},
+            </if>
+            <if test="ticketPrice!=null">
+                ticket_price=#{ticketPrice},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="remove">
+        delete from order_info
+        where id=#{id}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from order_info where id in
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+</mapper>

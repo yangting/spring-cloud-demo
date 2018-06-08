@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="one.yate.spring.cloud.provider.metadata.dao.mapper.OrderFlowMapper">
+
+    <resultMap type="one.yate.spring.cloud.provider.metadata.entity.OrderFlow" id="OrderFlowMap">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="orderChain" column="order_chain"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="getRecently" resultMap="OrderFlowMap">
+        select * from order_flow where order_id = #{orderId}
+    </select>
+
+    <!-- auto implement code by one.yate.spring.cloud.provider.metadata.dao.IBaseMapperDao.java -->
+    <select id="getEntity" resultMap="OrderFlowMap">
+        select * from order_flow where id= #{id}
+    </select>
+
+    <insert id="add">
+        <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        insert into order_flow(order_id,order_status,order_chain,create_time)
+        values(#{orderId},#{orderStatus},#{orderChain},now())
+    </insert>
+
+    <insert id="batchAdd">insert into order_flow(order_id,order_status,order_chain,create_time) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.orderId},#{item.orderStatus},#{item.orderChain},now())
+        </foreach>
+    </insert>
+
+    <update id="update">
+        update order_flow
+        <set>
+            <if test="orderId!=null">
+                order_id=#{orderId},
+            </if>
+            <if test="orderStatus!=null">
+                order_status=#{orderStatus},
+            </if>
+            <if test="orderChain!=null">
+                order_chain=#{orderChain},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="remove">
+        delete from order_flow
+        where id=#{id}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from order_flow where id in
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+</mapper>

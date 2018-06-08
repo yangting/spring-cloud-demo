@@ -1,0 +1,53 @@
+debug: false
+
+server:
+  port: 9999
+
+spring:
+  application:
+    name: demo-gateway
+  cloud:
+    refresh:
+      extra-refreshable:
+        - none
+    inetutils:
+      preferred-networks:
+        - 192.168
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9880/eureka,http://localhost:9881/eureka
+  instance:
+#    virtual-host-name: demo-gateway
+    prefer-ip-address: true
+
+zuul:
+  add-proxy-headers: true
+  add-host-header: true
+  ignored-patterns:
+    - /demo-provider/**
+    - /demo-consumer/**
+    - /movie-provider/movie/**
+#  ignored-services:
+#    - '*'
+#    - movie-provider
+#    - demo-provider
+#    - demo-consumer
+  routes:
+    demo-provider:
+      path: /user/**
+      stripPrefix: false
+    demo-consumer:
+      path: /**
+      stripPrefix: false
+    movie-provider:
+      path: /hello/**
+      stripPrefix: true
+# 指定禁用过滤器 simple-class-name.filter-type.disable:true
+  PreRequestLogFilter:
+    pre:
+      disable: true
+
+logging:
+  path: ${user.home}/logs/${spring.application.name}/${server.port}

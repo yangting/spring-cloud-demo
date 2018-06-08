@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="one.yate.spring.cloud.provider.matedata.dao.mapper.ExUserMapper">
+
+    <resultMap type="one.yate.spring.cloud.provider.matedata.entity.ExUser" id="ExUserMap">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="nickname" column="nickname"/>
+        <result property="age" column="age"/>
+        <result property="balance" column="balance"/>
+    </resultMap>
+
+
+    <select id="findBy" resultMap="ExUserMap">
+        select * from ex_user where username= #{username}
+    </select>
+
+    <update id="updateBy">
+        update ex_user set username=#{username} where id=#{id}
+    </update>
+
+
+    <!-- auto implement code by one.yate.spring.cloud.provider.metadata.dao.IBaseMapperDao.java -->
+    <select id="getEntity" resultMap="ExUserMap">
+        select * from ex_user where id= #{id}
+    </select>
+
+    <insert id="add">
+        <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        insert into ex_user(username,nickname,age,balance) values(#{username},#{nickname},#{age},#{balance})
+    </insert>
+
+    <insert id="batchAdd">insert into ex_user(username,nickname,age,balance) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.username},#{item.nickname},#{item.age},#{item.balance})
+        </foreach>
+    </insert>
+
+    <update id="update">
+        update ex_user
+        <set>
+            <if test="username!=null">
+                username=#{username},
+            </if>
+            <if test="nickname!=null">
+                nickname=#{nickname},
+            </if>
+            <if test="age!=null">
+                age=#{age},
+            </if>
+            <if test="balance!=null">
+                balance=#{balance},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="remove">
+        delete from ex_user
+        where id=#{id}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from ex_user where id in
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+</mapper>

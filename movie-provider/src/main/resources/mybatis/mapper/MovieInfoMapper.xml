@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="one.yate.spring.cloud.provider.metadata.dao.mapper.MovieInfoMapper">
+
+    <resultMap type="one.yate.spring.cloud.provider.metadata.entity.MovieInfo" id="MovieInfoMap">
+        <id property="id" column="id"/>
+        <result property="movieName" column="movie_name"/>
+        <result property="ticketPrice" column="ticket_price"/>
+    </resultMap>
+
+    <!-- auto implement code by one.yate.spring.cloud.metadata.dao.IBaseMapperDao.java -->
+    <select id="getEntity" resultMap="MovieInfoMap">
+        select * from movie_info where id= #{id}
+    </select>
+
+    <insert id="add">
+        <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        insert into movie_info(movie_name,ticket_price) values(#{movieName},#{ticketPrice})
+    </insert>
+
+    <insert id="batchAdd">insert into movie_info(movie_name,ticket_price) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.movieName},#{item.ticketPrice})
+        </foreach>
+    </insert>
+
+    <update id="update">
+        update movie_info
+        <set>
+            <if test="movieName!=null">
+                movie_name=#{movieName},
+            </if>
+            <if test="ticketPrice!=null">
+                ticket_price=#{ticketPrice},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="remove">
+        delete from movie_info
+        where id=#{id}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from movie_info where id in
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+</mapper>

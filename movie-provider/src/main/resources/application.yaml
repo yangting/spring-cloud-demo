@@ -1,0 +1,67 @@
+debug: false
+
+server:
+  port: 9887
+
+spring:
+  application:
+    name: movie-provider
+  cloud:
+    refresh:
+      extra-refreshable:
+        - none
+    inetutils:
+      preferred-networks:
+        - 192.168
+  datasource:
+    name: movie-ds
+    platform: mysql
+    url: jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&allowMultiQueries=true&characterEncoding=utf-8&useSSL=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root123
+    initialization-mode: EMBEDDED
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      pool-name: movie-ds
+      connection-test-query: SELECT 1
+      connection-timeout: 60000
+      auto-commit: false
+      minimum-idle: 1
+      max-lifetime: 1
+      maximum-pool-size: 8
+      data-source-properties:
+        cache-prep-stmts: true
+        prep-stmt-cache-size: 250
+        prep-stmt-cache-sql-limit: 2048
+        use-server-prep-stmts: true
+
+mybatis:
+  type-aliases-package: one.yate.spring.cloud.provider.metadata.entity
+  mapper-locations:
+    - classpath*:/mybatis/mapper/**/*.xml
+  executor-type: REUSE
+  configuration:
+      cache-enabled: true
+      lazy-loading-enabled: false
+      aggressive-lazy-loading: false
+      multiple-result-sets-enabled: true
+      use-column-label: true
+      use-generated-keys: true
+      auto-mapping-behavior: FULL
+      default-statement-timeout: 30
+      map-underscore-to-camel-case: true
+      default-fetch-size: 10
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9880/eureka/,http://localhost:9881/eureka
+  instance:
+#    virtual-host-name: demo-provider
+    prefer-ip-address: true
+
+
+logging:
+  path: ${user.home}/logs/${spring.application.name}/${server.port}
