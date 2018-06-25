@@ -30,4 +30,4 @@ target/
 Thumbs.db
 *.orig
 
-/**/**.iml
+**.iml
