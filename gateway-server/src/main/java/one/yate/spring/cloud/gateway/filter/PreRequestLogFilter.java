@@ -38,6 +38,6 @@ public class PreRequestLogFilter extends ZuulFilter {
         HttpServletRequest req = reqCtx.getRequest();
         reqCtx.addZuulRequestHeader("Test", "TestSample");
         log.info("My PreRequestLogFilter print send {} request to {}", req.getMethod(), req.getRequestURL().toString());
-        return null;
+        return true;
     }
 }

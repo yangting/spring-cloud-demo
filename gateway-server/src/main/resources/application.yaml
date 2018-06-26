@@ -5,7 +5,7 @@ server:
 
 spring:
   application:
-    name: demo-gateway
+    name: demo-gateway-v1
   cloud:
     refresh:
       extra-refreshable:
@@ -17,37 +17,43 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:9880/eureka,http://localhost:9881/eureka
+      defaultZone: http://10.64.104.106:34000/eureka
   instance:
-#    virtual-host-name: demo-gateway
     prefer-ip-address: true
 
 zuul:
+#servletPate zuul self controller entry default /zuul
+  servletPath: /api
   add-proxy-headers: true
   add-host-header: true
-  ignored-patterns:
-    - /demo-provider/**
-    - /demo-consumer/**
-    - /movie-provider/movie/**
-#  ignored-services:
-#    - '*'
-#    - movie-provider
-#    - demo-provider
-#    - demo-consumer
-  routes:
-    demo-provider:
-      path: /user/**
-      stripPrefix: false
-    demo-consumer:
-      path: /**
-      stripPrefix: false
-    movie-provider:
-      path: /hello/**
-      stripPrefix: true
+
+#  ignored-patterns:
+#    - /demo-provider/**
+#    - /demo-consumer/**
+#    - /movie-provider/movie/**
+
+  ignored-services:
+    - 'eureka-server'
+    - '*-provider-*'
+
+#  routes:
+#    demo-provider-v1:
+#      path: /user/**
+#      stripPrefix: true
+#    demo-provider:
+#      path: /xxx/**
+#      stripPrefix: false
+#    demo-consumer:
+#      path: /**
+#      stripPrefix: false
+#    movie-provider:
+#      path: /hello/**
+#      stripPrefix: true
+
 # 指定禁用过滤器 simple-class-name.filter-type.disable:true
-  PreRequestLogFilter:
-    pre:
-      disable: true
+#  PreRequestLogFilter:
+#    pre:
+#      disable: false
 
 logging:
   path: ${user.home}/logs/${spring.application.name}/${server.port}
