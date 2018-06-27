@@ -1,0 +1,25 @@
+debug: false
+
+server:
+  port: 9998
+
+spring:
+  application:
+    name: demo-security-v1
+  cloud:
+    refresh:
+      extra-refreshable:
+        - none
+    inetutils:
+      preferred-networks:
+        - 192.168
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://10.64.104.106:34000/eureka
+  instance:
+    prefer-ip-address: true
+
+logging:
+  path: ${user.home}/logs/${spring.application.name}/${server.port}
