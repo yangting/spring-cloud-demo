@@ -5,7 +5,7 @@ server:
 
 spring:
   application:
-    name: demo-provider
+    name: user-provider-v1
   cloud:
     refresh:
       extra-refreshable:
@@ -60,7 +60,7 @@ mybatis:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:9880/eureka,http://localhost:9881/eureka
+      defaultZone: http://10.64.104.106:34000/eureka
   instance:
 #    virtual-host-name: demo-provider
     prefer-ip-address: true

@@ -13,8 +13,8 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = "one.yate.spring.cloud.**")
 @SpringBootApplication
 @EnableEurekaClient
-public class ProviderApplication {
+public class UserProviderApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ProviderApplication.class, args);
+        SpringApplication.run(UserProviderApplication.class, args);
     }
 }

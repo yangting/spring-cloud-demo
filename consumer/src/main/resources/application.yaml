@@ -5,7 +5,7 @@ server:
 
 spring:
   application:
-    name: demo-consumer
+    name: demo-consumer-v1
   cloud:
     inetutils:
       preferred-networks:
@@ -41,7 +41,7 @@ feign:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:9881/eureka/,http://localhost:9880/eureka
+      defaultZone: http://10.64.104.106:34000/eureka
   instance:
     prefer-ip-address: true
 

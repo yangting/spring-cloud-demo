@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(qualifier = "demo-provider", name = "demo-provider", fallbackFactory = DemoRestServiceFallback.class, configuration = {FeignConfig.class})
+@FeignClient(name = "user-provider-v1", fallbackFactory = DemoRestServiceFallback.class, configuration = {FeignConfig.class})
 public interface IDemoRestService {
 
     @GetMapping("/user/{id}")

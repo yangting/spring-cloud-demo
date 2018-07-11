@@ -5,7 +5,7 @@ server:
 
 spring:
   application:
-    name: demo-gateway-v1
+    name: zuul-gateway-v1
   cloud:
     refresh:
       extra-refreshable:
@@ -21,34 +21,39 @@ eureka:
   instance:
     prefer-ip-address: true
 
+# zuul.* ZuulProperties.java
 zuul:
-#servletPate zuul self controller entry default /zuul
-  servletPath: /api
+#  prefix:
+  servletPath: /api #default /zuul
+  ignore-local-service: false
+
+  retryable: true
+  ribbon-isolation-strategy: THREAD # default SEMAPHORE
+  initial-stream-buffer-size: 8192 # default 8192 8M
+
   add-proxy-headers: true
   add-host-header: true
+  ignore-security-headers: true
 
-#  ignored-patterns:
-#    - /demo-provider/**
-#    - /demo-consumer/**
-#    - /movie-provider/movie/**
+  ignored-patterns:
+#    - '*-provider-*'
 
   ignored-services:
     - 'eureka-server'
-    - '*-provider-*'
+#    - '*-provider-*'
 
-#  routes:
-#    demo-provider-v1:
-#      path: /user/**
-#      stripPrefix: true
-#    demo-provider:
-#      path: /xxx/**
-#      stripPrefix: false
-#    demo-consumer:
-#      path: /**
-#      stripPrefix: false
-#    movie-provider:
-#      path: /hello/**
-#      stripPrefix: true
+  semaphore:
+    max-semaphores: 100 #default 100
+  thread-pool:
+    thread-pool-key-prefix: zuul-thread-example
+    use-separate-thread-pools: true # default false
+
+#  routes: #map
+
+# ZuulRouteApplicationContextInitializer
+  ribbon:
+    eager-load:
+      enabled: true
 
 # 指定禁用过滤器 simple-class-name.filter-type.disable:true
 #  PreRequestLogFilter:

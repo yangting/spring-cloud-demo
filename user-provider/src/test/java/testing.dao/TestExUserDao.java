@@ -1,7 +1,7 @@
 package testing.dao;
 
 
-import one.yate.spring.cloud.provider.ProviderApplication;
+import one.yate.spring.cloud.provider.UserProviderApplication;
 import one.yate.spring.cloud.provider.matedata.dao.mapper.ExUserMapper;
 import one.yate.spring.cloud.provider.matedata.entity.ExUser;
 import org.junit.Assert;
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ProviderApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = UserProviderApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TestExUserDao {
     @Resource
     ExUserMapper exUserDao;

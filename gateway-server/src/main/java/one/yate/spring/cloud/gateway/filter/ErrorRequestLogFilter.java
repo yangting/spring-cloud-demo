@@ -4,8 +4,13 @@ import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StreamUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 
 @Slf4j
 public class ErrorRequestLogFilter extends ZuulFilter {
@@ -36,6 +41,18 @@ public class ErrorRequestLogFilter extends ZuulFilter {
     public Object run() throws ZuulException {
         RequestContext reqCtx = RequestContext.getCurrentContext();
         HttpServletRequest req = reqCtx.getRequest();
+        HttpServletResponse res = reqCtx.getResponse();
+        for(String h : res.getHeaderNames()){
+            System.out.println(res.getHeader(h));
+        }
+        InputStream stream = reqCtx.getResponseDataStream();
+        String body = null;
+        try {
+            body = StreamUtils.copyToString(stream, Charset.forName("UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        reqCtx.setResponseBody("new body: "+body);
         log.info("My ErrorRequestLogFilter print send {} request to {}", req.getMethod(), req.getRequestURL().toString());
         return null;
     }

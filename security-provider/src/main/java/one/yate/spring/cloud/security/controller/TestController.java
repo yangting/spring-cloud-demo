@@ -1,5 +1,6 @@
 package one.yate.spring.cloud.security.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,8 @@ import java.util.Map;
 
 @RestController
 public class TestController {
+
+    @PreAuthorize("#oauth2.hasScope('read')")
     @RequestMapping(value = {"/user"}, produces = "application/json")
     public Map<String, Object> user(OAuth2Authentication user) {
         Map<String, Object> userInfo = new HashMap<>();

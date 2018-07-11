@@ -1,11 +1,18 @@
 package one.yate.spring.cloud.gateway.filter;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StreamUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.Map;
 
 @Slf4j
 public class PostRequestLogFilter extends ZuulFilter {
@@ -36,7 +43,28 @@ public class PostRequestLogFilter extends ZuulFilter {
     public Object run() throws ZuulException {
         RequestContext reqCtx = RequestContext.getCurrentContext();
         HttpServletRequest req = reqCtx.getRequest();
-        log.info("My PostRequestLogFilter print send {} request to {}", req.getMethod(), req.getRequestURL().toString());
-        return null;
+
+        InputStream stream = reqCtx.getResponseDataStream();
+        String body = null;
+        try {
+            body = StreamUtils.copyToString(stream, Charset.forName("UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = null;
+        try {
+            map = mapper.readValue(body, new TypeReference<Map<String, String>>(){});
+            map.put("code","500");
+
+            reqCtx.setResponseBody("new body: "+map.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        throw new NullPointerException("code=500");
+
+//        log.info("My PostRequestLogFilter print send {} request to {}", req.getMethod(), req.getRequestURL().toString());
+//        return null;
     }
 }
