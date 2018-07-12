@@ -4,21 +4,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
+import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonInputMessage;
 import org.springframework.lang.Nullable;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
 public class ResultHttpMessageConverter extends AbstractJackson2HttpMessageConverter {
-    protected ResultHttpMessageConverter(ObjectMapper objectMapper) {
+    public ResultHttpMessageConverter(ObjectMapper objectMapper) {
         super(objectMapper);
     }
 
@@ -41,28 +42,21 @@ public class ResultHttpMessageConverter extends AbstractJackson2HttpMessageConve
     @Override
     public Object read(Type type, @Nullable Class<?> contextClass, HttpInputMessage inputMessage)
             throws IOException, HttpMessageNotReadableException {
-
         try {
-            if (inputMessage instanceof MappingJacksonInputMessage) {
-                Class<?> deserializationView = ((MappingJacksonInputMessage) inputMessage).getDeserializationView();
-                if (deserializationView != null) {
-                    ResBean r = this.objectMapper.readerWithView(deserializationView).forType(ResBean.class).
-                            readValue(inputMessage.getBody());
-                    if (r.getCode() == null) {
-                        // 不可转换
-                        throw new HttpMessageConversionException("转换ResBean出错");
-                    }
-                    JavaType javaType = getJavaType(type, contextClass);
-                    return this.objectMapper.readValue(objectMapper.writeValueAsString(r.getData()), javaType);
-                }
-            }
-            ResBean r = this.objectMapper.readValue(inputMessage.getBody(), ResBean.class);
-            if (r.getCode() == null) {
-                // 不可转换
-                throw new HttpMessageConversionException("转换ResBean出错");
-            }
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(inputMessage.getBody(), writer);
+            String theString = writer.toString();
+
             JavaType javaType = getJavaType(type, contextClass);
-            return this.objectMapper.readValue(objectMapper.writeValueAsString(r.getData()), javaType);
+            try {
+                ResBean r = this.objectMapper.readValue(theString, ResBean.class);
+                if(javaType.hasRawClass(ResBean.class)){
+                    return r;
+                }
+                return this.objectMapper.readValue(objectMapper.writeValueAsString(r.getData()), javaType);
+            } catch (Exception e) {
+            }
+            return this.objectMapper.readValue(theString, javaType);
         } catch (InvalidDefinitionException ex) {
             throw new HttpMessageConversionException("Type definition error: " + ex.getType(), ex);
         } catch (JsonProcessingException ex) {
